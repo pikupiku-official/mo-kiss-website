@@ -1,0 +1,88 @@
+# モーキス公式サイト .htaccess
+
+# PHP設定
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_value max_execution_time 300
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+</IfModule>
+
+# 文字コード設定
+AddDefaultCharset UTF-8
+
+# MIMEタイプ設定
+<IfModule mod_mime.c>
+    AddType audio/mpeg mp3
+    AddType audio/ogg ogg
+    AddType image/gif gif
+    AddType image/jpeg jpg jpeg
+    AddType image/png png
+</IfModule>
+
+# セキュリティ設定
+<IfModule mod_headers.c>
+    # XSS対策
+    Header set X-XSS-Protection "1; mode=block"
+
+    # クリックジャッキング対策
+    Header always append X-Frame-Options SAMEORIGIN
+
+    # MIMEタイプスニッフィング対策
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# ディレクトリリスティング無効化
+Options -Indexes
+
+# includesディレクトリへの直接アクセス禁止
+<FilesMatch "^(config|db|auth|functions)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# .htaccessと.gitファイルへのアクセス禁止
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# database.sqlへの直接アクセス禁止
+<Files "database.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# エラーページ設定（オプション）
+# ErrorDocument 404 /error404.html
+# ErrorDocument 500 /error500.html
+
+# キャッシュ設定
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # 画像
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+
+    # CSS/JavaScript
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+
+    # 音声
+    ExpiresByType audio/mpeg "access plus 1 month"
+</IfModule>
+
+# GZIP圧縮
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+</IfModule>
+
+# HTTPSリダイレクト（本番環境で有効化）
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>

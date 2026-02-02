@@ -1,0 +1,333 @@
+/**
+ * モーキス公式サイト - 1999年風レトロスタイルシート
+ */
+
+/* 基本設定 */
+body {
+    font-family: "MS Pゴシック", "MS PGothic", Osaka, sans-serif;
+    background: #000033;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="g"><stop offset="0%25" stop-color="%23000055"/><stop offset="100%25" stop-color="%23000022"/></radialGradient></defs><rect width="100" height="100" fill="url(%23g)"/></svg>');
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+}
+
+/* フレーム用のスタイル */
+frameset {
+    border: 0;
+}
+
+/* テーブルレイアウト */
+table {
+    border-collapse: collapse;
+}
+
+/* リンク */
+a:link {
+    color: #66ccff;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #cc99ff;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #ffff00;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 見出し */
+h1, h2, h3 {
+    font-family: "MS Pゴシック", "MS PGothic", sans-serif;
+    margin: 15px 0 10px;
+}
+
+h1 {
+    font-size: 20px;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+h2 {
+    font-size: 16px;
+    color: #ff99cc;
+    border-left: 4px solid #ff66aa;
+    padding-left: 10px;
+}
+
+h3 {
+    font-size: 14px;
+    color: #99ccff;
+}
+
+/* コンテンツエリア */
+.content {
+    background: #ffffff;
+    color: #000000;
+    padding: 20px;
+    margin: 10px;
+}
+
+.content h1 {
+    color: #cc0066;
+}
+
+.content h2 {
+    color: #0066cc;
+}
+
+.content a:link {
+    color: #0066cc;
+}
+
+.content a:visited {
+    color: #6600cc;
+}
+
+/* メニュー */
+.menu {
+    background: #003366;
+    padding: 10px;
+}
+
+.menu-item {
+    display: block;
+    background: #0066cc;
+    color: #ffffff;
+    padding: 8px 15px;
+    margin: 5px 0;
+    text-decoration: none;
+    border: 2px outset #3399ff;
+    text-align: center;
+    font-weight: bold;
+}
+
+.menu-item:hover {
+    background: #0099ff;
+    border: 2px inset #3399ff;
+}
+
+/* What's New */
+.news-item {
+    margin: 10px 0;
+    padding: 8px;
+    border-bottom: 1px dotted #cccccc;
+}
+
+.news-date {
+    color: #cc0066;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* キャラクター */
+.character-box {
+    background: #f0f0ff;
+    border: 3px solid #9966cc;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.character-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #cc0066;
+    border-bottom: 2px solid #ff99cc;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.character-kana {
+    font-size: 11px;
+    color: #666666;
+    margin-left: 10px;
+}
+
+.character-info {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.character-info strong {
+    color: #0066cc;
+}
+
+/* カウンター */
+.counter {
+    display: inline-block;
+    background: #000000;
+    padding: 5px 10px;
+    border: 2px solid #ffcc00;
+}
+
+/* 区切り線 */
+.separator {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.separator img {
+    display: inline-block;
+}
+
+/* 工事中 */
+.construction {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.construction img {
+    margin: 20px;
+}
+
+/* レトロボタン */
+.retro-button {
+    display: inline-block;
+    padding: 10px 30px;
+    background: linear-gradient(to bottom, #ff99cc 0%, #ff66aa 100%);
+    color: #ffffff;
+    text-decoration: none;
+    border: 3px outset #ffaacc;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #990066;
+    cursor: pointer;
+}
+
+.retro-button:hover {
+    background: linear-gradient(to bottom, #ffaadd 0%, #ff77bb 100%);
+    border: 3px inset #ffaacc;
+}
+
+/* カウントダウン */
+.countdown-box {
+    background: #ffcc00;
+    color: #cc0000;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    border: 5px double #ff6600;
+    margin: 20px 0;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 99% { opacity: 0.7; }
+}
+
+/* スクロールテキスト（marqueeの代替） */
+.scroll-text {
+    background: #000033;
+    color: #ffff00;
+    padding: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.scroll-text span {
+    display: inline-block;
+    animation: scroll-left 20s linear infinite;
+}
+
+@keyframes scroll-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+
+/* BGMコントロール */
+.bgm-control {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #003366;
+    border: 2px solid #0066cc;
+    padding: 5px 10px;
+    z-index: 1000;
+}
+
+.bgm-control button {
+    background: #0066cc;
+    color: #ffffff;
+    border: 1px outset #3399ff;
+    padding: 3px 8px;
+    margin: 0 2px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.bgm-control button:hover {
+    background: #0099ff;
+}
+
+.bgm-control button:active {
+    border: 1px inset #3399ff;
+}
+
+/* ENTERページ用 */
+.enter-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.enter-logo {
+    margin-bottom: 50px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.enter-button {
+    font-size: 24px;
+    padding: 20px 60px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* 注意書き */
+.notice {
+    font-size: 10px;
+    color: #999999;
+    text-align: center;
+    margin: 20px;
+    line-height: 1.4;
+}
+
+/* テーブル装飾 */
+.deco-table {
+    border: 2px solid #9966cc;
+    background: #f5f5ff;
+    width: 100%;
+}
+
+.deco-table td {
+    padding: 10px;
+}
+
+/* リスト */
+ul {
+    line-height: 1.8;
+}
+
+li {
+    margin: 5px 0;
+}
+
+/* 画像 */
+img {
+    border: 0;
+}

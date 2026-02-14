@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS access_counter (
 
 -- デフォルト管理者ユーザー（パスワード: admin123）
 INSERT INTO users (username, password) VALUES
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+('admin', '$2y$12$0ZC20SKq4FoLVDcNpJYZGeb0pYpmAnFqr6kEHM0Ytoep98l4Gn4My');
 
 -- ページコンテンツ初期値
 INSERT INTO pages (slug, title, content) VALUES

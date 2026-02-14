@@ -49,7 +49,6 @@ h1, h2, h3 {
 h1 {
     font-size: 20px;
     color: #ffcc00;
-    text-shadow: 2px 2px 4px #000000;
 }
 
 h2 {
@@ -188,17 +187,16 @@ h3 {
 .retro-button {
     display: inline-block;
     padding: 10px 30px;
-    background: linear-gradient(to bottom, #ff99cc 0%, #ff66aa 100%);
+    background: #ff99cc;
     color: #ffffff;
     text-decoration: none;
     border: 3px outset #ffaacc;
     font-weight: bold;
-    text-shadow: 1px 1px 2px #990066;
     cursor: pointer;
 }
 
 .retro-button:hover {
-    background: linear-gradient(to bottom, #ffaadd 0%, #ff77bb 100%);
+    background: #ff77bb;
     border: 3px inset #ffaacc;
 }
 
@@ -212,31 +210,15 @@ h3 {
     padding: 20px;
     border: 5px double #ff6600;
     margin: 20px 0;
-    animation: blink 1.5s infinite;
 }
 
-@keyframes blink {
-    0%, 49% { opacity: 1; }
-    50%, 99% { opacity: 0.7; }
-}
-
-/* スクロールテキスト（marqueeの代替） */
+/* スクロールテキスト（marqueeタグを使用） */
 .scroll-text {
     background: #000033;
     color: #ffff00;
     padding: 10px;
     overflow: hidden;
     white-space: nowrap;
-}
-
-.scroll-text span {
-    display: inline-block;
-    animation: scroll-left 20s linear infinite;
-}
-
-@keyframes scroll-left {
-    from { transform: translateX(100%); }
-    to { transform: translateX(-100%); }
 }
 
 /* BGMコントロール */
@@ -270,32 +252,17 @@ h3 {
 
 /* ENTERページ用 */
 .enter-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    flex-direction: column;
+    text-align: center;
+    padding-top: 100px;
 }
 
 .enter-logo {
     margin-bottom: 50px;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
 }
 
 .enter-button {
     font-size: 24px;
     padding: 20px 60px;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
 }
 
 /* 注意書き */

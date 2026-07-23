@@ -43,6 +43,8 @@ jobs:
             -e "
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
+              set ftp:passive-mode true;
+              set ftp:prefer-epsv false;
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;

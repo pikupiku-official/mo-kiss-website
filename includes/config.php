@@ -4,14 +4,21 @@
  */
 
 // データベース接続情報
-define('DB_HOST', 'mysql1016.onamae.ne.jp');
-define('DB_NAME', 'c8npo_mksite');
-define('DB_USER', 'c8npo_pikupiku');
-define('DB_PASS', 'Pkpktheme0_');
+// Keep production credentials in config.local.php (not in Git).
+$localConfig = __DIR__ . '/config.local.php';
+if (is_file($localConfig)) {
+    require_once $localConfig;
+}
+
+// Environment variables are also supported; local constants take priority.
+defined('DB_HOST') || define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+defined('DB_NAME') || define('DB_NAME', getenv('DB_NAME') ?: '');
+defined('DB_USER') || define('DB_USER', getenv('DB_USER') ?: '');
+defined('DB_PASS') || define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // サイト設定
-define('SITE_URL', 'https://yourdomain.com');  // 実際のドメインに変更してください
+defined('SITE_URL') || define('SITE_URL', getenv('SITE_URL') ?: 'https://mokiss.jp');
 define('SITE_TITLE', 'モーキス 公式サイト');
 
 // セッション設定

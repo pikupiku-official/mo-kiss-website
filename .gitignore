@@ -1,0 +1,9 @@
+# Server-only secrets
+/includes/config.local.php
+
+# Local environment files
+/.env
+/.env.*
+
+# Deployment state
+/.ftp-deploy-sync-state.json

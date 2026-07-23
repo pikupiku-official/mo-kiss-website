@@ -80,9 +80,9 @@ Options -Indexes
     AddOutputFilterByType DEFLATE application/javascript application/json
 </IfModule>
 
-# HTTPSリダイレクト（本番環境で有効化）
-# <IfModule mod_rewrite.c>
-#     RewriteEngine On
-#     RewriteCond %{HTTPS} off
-#     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-# </IfModule>
+# HTTPSリダイレクト
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

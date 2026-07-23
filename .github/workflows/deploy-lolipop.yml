@@ -47,6 +47,7 @@ jobs:
           sshpass -e ssh \
             -p "$SSH_PORT" \
             -o StrictHostKeyChecking=no \
+            -o UpdateHostKeys=no \
             "$SSH_USER@$SSH_HOST" \
             'test -d "$HOME/web" && mkdir -p "$HOME/web/mokiss"'
 
@@ -57,6 +58,14 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSHPASS: ${{ secrets.SSH_PASS }}
         run: |
+          REMOTE_PATH="$(sshpass -e ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            -o UpdateHostKeys=no \
+            "$SSH_USER@$SSH_HOST" \
+            'printf "%s" "$HOME/web/mokiss"')"
+          test -n "$REMOTE_PATH"
+
           sshpass -e rsync -avz \
             --exclude='.git/' \
             --exclude='.github/' \
@@ -69,8 +78,8 @@ jobs:
             --exclude='scratch/' \
             --exclude='*.md' \
             --exclude='スクリーンショット*' \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" \
-            ./ "$SSH_USER@$SSH_HOST:~/web/mokiss/"
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no -o UpdateHostKeys=no" \
+            ./ "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
 
       - name: Verify deployment
         env:
@@ -82,6 +91,7 @@ jobs:
           REMOTE_SHA="$(sshpass -e ssh \
             -p "$SSH_PORT" \
             -o StrictHostKeyChecking=no \
+            -o UpdateHostKeys=no \
             "$SSH_USER@$SSH_HOST" \
             'cat "$HOME/web/mokiss/deploy-version.txt"')"
           test "$REMOTE_SHA" = "$GITHUB_SHA"

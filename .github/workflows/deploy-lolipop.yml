@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check PHP syntax
         run: |
@@ -25,23 +25,43 @@ jobs:
             -not -path './.git/*' \
             -print0 | xargs -0 -n1 php -l
 
+      - name: Install lftp
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes lftp
+
       - name: Upload over FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.LOLIPOP_FTP_SERVER }}
-          username: ${{ secrets.LOLIPOP_FTP_USERNAME }}
-          password: ${{ secrets.LOLIPOP_FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          server-dir: ${{ secrets.LOLIPOP_SERVER_DIR }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/.github/**
-            **/.env*
-            **/includes/config.local.php
-            **/database.sql
-            **/test_connection.php
-            **/scratch/**
-            **/*.md
-            **/スクリーンショット*
+        env:
+          LOLIPOP_FTP_SERVER: ${{ secrets.LOLIPOP_FTP_SERVER }}
+          LOLIPOP_FTP_USERNAME: ${{ secrets.LOLIPOP_FTP_USERNAME }}
+          LOLIPOP_FTP_PASSWORD: ${{ secrets.LOLIPOP_FTP_PASSWORD }}
+          LOLIPOP_SERVER_DIR: ${{ secrets.LOLIPOP_SERVER_DIR }}
+        run: |
+          lftp \
+            -u "$LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD" \
+            "$LOLIPOP_FTP_SERVER" \
+            -e "
+              set ftp:ssl-force true;
+              set ftp:ssl-protect-data true;
+              set ssl:verify-certificate true;
+              set net:max-retries 2;
+              set net:timeout 20;
+              cd \"$LOLIPOP_SERVER_DIR\";
+              mirror --reverse --verbose --parallel=4 \
+                --exclude-glob .git \
+                --exclude-glob .git/** \
+                --exclude-glob .github \
+                --exclude-glob .github/** \
+                --exclude-glob .env \
+                --exclude-glob .env.* \
+                --exclude-glob includes/config.local.php \
+                --exclude-glob includes/config.local.example.php \
+                --exclude-glob database.sql \
+                --exclude-glob test_connection.php \
+                --exclude-glob scratch \
+                --exclude-glob scratch/** \
+                --exclude-glob '*.md' \
+                --exclude-glob 'スクリーンショット*' \
+                . .;
+              bye
+            "

@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Menu</title>
     <link rel="stylesheet" href="css/retro.css">
+    <script src="js/retro.js"></script>
 </head>
 <body class="menu">
     <center>
@@ -13,24 +14,29 @@
     </center>
 
     <a href="home.php" target="content" class="menu-item">HOME</a>
-    <a href="story.php" target="content" class="menu-item">STORY</a>
     <a href="character.php" target="content" class="menu-item">CHARACTER</a>
     <a href="system.php" target="content" class="menu-item">SYSTEM</a>
-    <a href="special.php" target="content" class="menu-item">SPECIAL</a>
     <a href="construction.html" target="content" class="menu-item">GALLERY</a>
     <a href="construction.html" target="content" class="menu-item">DOWNLOAD</a>
     <a href="construction.html" target="content" class="menu-item">BBS</a>
-    <a href="construction.html" target="content" class="menu-item">LINK</a>
+    <a href="link.php" target="content" class="menu-item">LINK</a>
 
     <div style="margin-top: 30px; text-align: center;">
-        <img src="images/icons/new.gif" alt="NEW" width="40" height="15" style="display: block; margin: 10px auto;">
-        <img src="images/icons/mail.gif" alt="MAIL" width="40" height="15" style="display: block; margin: 10px auto;">
+        <svg class="blink" width="40" height="15" style="display: block; margin: 10px auto; image-rendering: pixelated;" viewBox="0 0 40 15">
+            <rect width="40" height="15" fill="#e6007e" stroke="#ff66cc" stroke-width="1"/>
+            <text x="50%" y="11" font-family="'MS Gothic', monospace" font-size="10px" font-weight="bold" fill="#fdf5e6" text-anchor="middle">NEW!</text>
+        </svg>
+        <svg width="40" height="15" style="display: block; margin: 10px auto; image-rendering: pixelated;" viewBox="0 0 40 15">
+            <rect x="10" y="2" width="20" height="11" fill="#4a1224" stroke="#ff66cc" stroke-width="1"/>
+            <rect x="11" y="3" width="18" height="9" fill="#fdf5e6"/>
+            <path d="M11,3 L20,8 L29,3" stroke="#4a1224" fill="none" stroke-width="1"/>
+        </svg>
     </div>
 
-    <div style="margin-top: 30px; padding: 10px; background: #001133; border: 1px solid #3366cc; font-size: 10px; text-align: center; color: #99ccff;">
-        <p style="margin: 5px 0;">このサイトは</p>
-        <p style="margin: 5px 0;">リンクフリーです</p>
-        <p style="margin: 5px 0; color: #ff6666;">※直リン禁止</p>
+    <div style="margin-top: 30px; padding: 10px; background: #1a0813; border: 2px ridge #ff66cc; font-size: 10px; text-align: center; color: #fdf5e6;">
+        <p style="margin: 5px 0; font-weight: bold;">当サイトは</p>
+        <p style="margin: 5px 0; color: #ff7f00; font-weight: bold;">★ リンクフリー ★</p>
+        <p style="margin: 5px 0; color: #e6007e; font-weight: bold;">※直リンク禁止※</p>
     </div>
 
     <div style="margin-top: 20px; text-align: center; font-size: 10px; color: #666;">

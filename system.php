@@ -15,13 +15,14 @@ $page = getPageContent('system');
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>SYSTEM - モーキス 公式サイト</title>
     <link rel="stylesheet" href="css/retro.css">
+    <script src="js/retro.js"></script>
 </head>
 <body>
 
 <div class="content">
     <center>
-        <h1 style="font-size: 28px; color: #ff6699;">
-            ★ SYSTEM ★
+        <h1 style="font-size: 28px;">
+            <span class="rainbow-text">★ SYSTEM ★</span>
         </h1>
         <div class="separator" style="margin: 20px 0;">
             ★ ☆ ★ ☆ ★
@@ -29,7 +30,7 @@ $page = getPageContent('system');
     </center>
 
     <?php if ($page): ?>
-        <div style="line-height: 1.8;">
+        <div style="line-height: 1.4;">
             <?php echo $page['content']; ?>
         </div>
     <?php else: ?>
@@ -44,7 +45,7 @@ $page = getPageContent('system');
 
     <center>
         <p style="margin: 20px 0;">
-            <a href="home.php" style="color: #0066cc; font-weight: bold;">« HOMEに戻る</a>
+            <a href="home.php" style="color: #3b52a2;">« HOMEに戻る</a>
         </p>
     </center>
 

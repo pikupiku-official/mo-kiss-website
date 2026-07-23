@@ -15,13 +15,14 @@ $page = getPageContent('story');
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>STORY - モーキス 公式サイト</title>
     <link rel="stylesheet" href="css/retro.css">
+    <script src="js/retro.js"></script>
 </head>
 <body>
 
 <div class="content">
     <center>
-        <h1 style="font-size: 28px; color: #ff6699;">
-            ★ STORY ★
+        <h1 style="font-size: 28px;">
+            <span class="rainbow-text">★ STORY ★</span>
         </h1>
         <div class="separator" style="margin: 20px 0;">
             ★ ☆ ★ ☆ ★

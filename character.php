@@ -15,13 +15,14 @@ $characters = getCharacters();
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>CHARACTER - モーキス 公式サイト</title>
     <link rel="stylesheet" href="css/retro.css">
+    <script src="js/retro.js"></script>
 </head>
 <body>
 
 <div class="content">
     <center>
-        <h1 style="font-size: 28px; color: #ff6699;">
-            ★ CHARACTER ★
+        <h1 style="font-size: 28px;">
+            <span class="rainbow-text">★ CHARACTER ★</span>
         </h1>
         <div class="separator" style="margin: 20px 0;">
             ★ ☆ ★ ☆ ★
@@ -49,6 +50,12 @@ $characters = getCharacters();
                                 <img src="<?php echo h($char['image_path']); ?>"
                                      alt="<?php echo h($char['name']); ?>"
                                      style="max-width: 180px; border: 2px solid #9966cc;">
+                            </td>
+                        <?php else: ?>
+                            <td width="200" valign="top" align="center">
+                                <div style="width: 150px; height: 200px; background: #1a0813; border: 2px dashed #ff66cc; display: flex; align-items: center; justify-content: center; color: #ff7f00; font-size: 11px; font-weight: bold;">
+                                    [ 立ち絵準備中 ]
+                                </div>
                             </td>
                         <?php endif; ?>
                         <td valign="top">

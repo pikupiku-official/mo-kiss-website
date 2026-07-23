@@ -1,0 +1,47 @@
+name: Deploy to Lolipop
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: lolipop-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check PHP syntax
+        run: |
+          find . -type f -name '*.php' \
+            -not -path './.git/*' \
+            -print0 | xargs -0 -n1 php -l
+
+      - name: Upload over FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.LOLIPOP_FTP_SERVER }}
+          username: ${{ secrets.LOLIPOP_FTP_USERNAME }}
+          password: ${{ secrets.LOLIPOP_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          server-dir: ${{ secrets.LOLIPOP_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/.env*
+            **/includes/config.local.php
+            **/database.sql
+            **/test_connection.php
+            **/scratch/**
+            **/*.md
+            **/スクリーンショット*

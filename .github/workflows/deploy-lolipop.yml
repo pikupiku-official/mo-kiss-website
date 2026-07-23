@@ -46,7 +46,7 @@ jobs:
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;
-              cd \"$LOLIPOP_SERVER_DIR\";
+              cd $LOLIPOP_SERVER_DIR;
               mirror --reverse --verbose --parallel=4 \
                 --exclude-glob .git \
                 --exclude-glob .git/** \

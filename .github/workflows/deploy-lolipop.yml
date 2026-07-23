@@ -37,10 +37,7 @@ jobs:
           LOLIPOP_FTP_PASSWORD: ${{ secrets.LOLIPOP_FTP_PASSWORD }}
           LOLIPOP_SERVER_DIR: ${{ secrets.LOLIPOP_SERVER_DIR }}
         run: |
-          lftp \
-            -u "$LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD" \
-            "$LOLIPOP_FTP_SERVER" \
-            -e "
+          lftp -e "
               debug 3;
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
@@ -49,6 +46,7 @@ jobs:
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;
+              open -u \"$LOLIPOP_FTP_USERNAME\",\"$LOLIPOP_FTP_PASSWORD\" \"$LOLIPOP_FTP_SERVER\";
               echo 'FTP current directory:';
               pwd;
               echo 'FTP root contents:';

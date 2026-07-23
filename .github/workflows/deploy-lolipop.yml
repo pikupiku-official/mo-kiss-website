@@ -41,6 +41,7 @@ jobs:
             -u "$LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD" \
             "$LOLIPOP_FTP_SERVER" \
             -e "
+              debug 3;
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
               set ftp:passive-mode true;

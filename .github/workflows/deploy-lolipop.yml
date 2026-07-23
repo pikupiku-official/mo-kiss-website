@@ -46,6 +46,10 @@ jobs:
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;
+              echo 'FTP current directory:';
+              pwd;
+              echo 'FTP root contents:';
+              cls -la;
               cd $LOLIPOP_SERVER_DIR;
               mirror --reverse --verbose --parallel=4 \
                 --exclude-glob .git \

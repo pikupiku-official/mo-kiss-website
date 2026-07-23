@@ -33,17 +33,91 @@ function formatDateJp($date) {
 }
 
 /**
- * アクセスカウンターの値を取得・更新
+ * 匿名の訪問者IDをCookieに保存する。
+ * 個人情報やIPアドレスは保存せず、ランダムIDのハッシュだけをDBへ記録する。
  */
-function getAccessCount($increment = false) {
-    $db = Database::getInstance();
+function getVisitorHash() {
+    $cookieName = 'mokiss_visitor';
+    $visitorId = isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : '';
 
-    if ($increment) {
-        $db->execute("UPDATE access_counter SET count = count + 1 WHERE id = 1");
+    if (!preg_match('/^[a-f0-9]{32}$/', $visitorId)) {
+        try {
+            $visitorId = bin2hex(random_bytes(16));
+        } catch (Exception $e) {
+            $visitorId = md5(uniqid('', true));
+        }
+
+        setcookie($cookieName, $visitorId, [
+            'expires' => time() + 60 * 60 * 24 * 365 * 2,
+            'path' => '/',
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+        $_COOKIE[$cookieName] = $visitorId;
     }
 
-    $result = $db->queryOne("SELECT count FROM access_counter WHERE id = 1");
-    return $result ? $result['count'] : 0;
+    return hash('sha256', $visitorId);
+}
+
+/**
+ * 実数ベースのアクセス統計を取得する。
+ *
+ * total: この仕組みを導入してからのユニーク訪問者数 + 旧カウンター値
+ * today/yesterday: 各日に訪れたユニーク訪問者数
+ */
+function getAccessStats($recordVisit = false) {
+    $db = Database::getInstance();
+    $pdo = $db->getConnection();
+
+    // database.sqlを再投入しなくても既存サイトを移行できるようにする。
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS access_visitors (
+            visitor_hash CHAR(64) PRIMARY KEY,
+            first_visited_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS access_daily_visitors (
+            visit_date DATE NOT NULL,
+            visitor_hash CHAR(64) NOT NULL,
+            first_visited_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (visit_date, visitor_hash),
+            INDEX idx_visit_date (visit_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    if ($recordVisit) {
+        $visitorHash = getVisitorHash();
+        $stmt = $pdo->prepare("INSERT IGNORE INTO access_visitors (visitor_hash) VALUES (?)");
+        $stmt->execute([$visitorHash]);
+        $stmt = $pdo->prepare(
+            "INSERT IGNORE INTO access_daily_visitors (visit_date, visitor_hash) VALUES (CURDATE(), ?)"
+        );
+        $stmt->execute([$visitorHash]);
+    }
+
+    $legacy = $db->queryOne("SELECT count FROM access_counter WHERE id = 1");
+    $legacyCount = $legacy ? (int)$legacy['count'] : 0;
+    $unique = $db->queryOne("SELECT COUNT(*) AS count FROM access_visitors");
+    $today = $db->queryOne(
+        "SELECT COUNT(*) AS count FROM access_daily_visitors WHERE visit_date = CURDATE()"
+    );
+    $yesterday = $db->queryOne(
+        "SELECT COUNT(*) AS count FROM access_daily_visitors WHERE visit_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"
+    );
+
+    return [
+        'total' => $legacyCount + ($unique ? (int)$unique['count'] : 0),
+        'today' => $today ? (int)$today['count'] : 0,
+        'yesterday' => $yesterday ? (int)$yesterday['count'] : 0,
+    ];
+}
+
+// 既存コードとの互換用。新規コードでは getAccessStats() を使う。
+function getAccessCount($increment = false) {
+    $stats = getAccessStats($increment);
+    return $stats['total'];
 }
 
 /**
@@ -86,9 +160,38 @@ function getNews($limit = 10) {
  * ページコンテンツ取得
  */
 function getPageContent($slug) {
-    $db = Database::getInstance();
-    $sql = "SELECT * FROM pages WHERE slug = ?";
-    return $db->queryOne($sql, [$slug]);
+    if (!preg_match('/^[a-z0-9_-]+$/', $slug)) {
+        return false;
+    }
+
+    $path = __DIR__ . '/../content/' . $slug . '.html';
+    if (!is_file($path)) {
+        return false;
+    }
+
+    return [
+        'slug' => $slug,
+        'title' => strtoupper($slug),
+        'content' => file_get_contents($path),
+        'updated_at' => date('Y-m-d H:i:s', filemtime($path)),
+    ];
+}
+
+/**
+ * 管理画面から長文コンテンツを安全にファイル保存する。
+ */
+function savePageContent($slug, $content) {
+    if (!preg_match('/^[a-z0-9_-]+$/', $slug)) {
+        return false;
+    }
+
+    $directory = __DIR__ . '/../content';
+    if (!is_dir($directory) && !mkdir($directory, 0755, true)) {
+        return false;
+    }
+
+    $path = $directory . '/' . $slug . '.html';
+    return file_put_contents($path, $content, LOCK_EX) !== false;
 }
 
 /**
@@ -104,9 +207,33 @@ function getCharacters() {
  * SPECIAL情報取得
  */
 function getSpecialInfo() {
-    $db = Database::getInstance();
-    $sql = "SELECT * FROM special WHERE id = 1";
-    return $db->queryOne($sql);
+    $settingsPath = __DIR__ . '/../content/special.php';
+    $contentPath = __DIR__ . '/../content/special.html';
+    if (!is_file($settingsPath) || !is_file($contentPath)) {
+        return false;
+    }
+
+    $settings = require $settingsPath;
+    return [
+        'id' => 1,
+        'release_date' => isset($settings['release_date']) ? $settings['release_date'] : null,
+        'content' => file_get_contents($contentPath),
+        'updated_at' => date('Y-m-d H:i:s', max(filemtime($settingsPath), filemtime($contentPath))),
+    ];
+}
+
+function saveSpecialInfo($releaseDate, $content) {
+    $directory = __DIR__ . '/../content';
+    if (!is_dir($directory) && !mkdir($directory, 0755, true)) {
+        return false;
+    }
+
+    $settings = "<?php\nreturn [\n    'release_date' => "
+        . var_export($releaseDate ?: null, true)
+        . ",\n];\n";
+
+    return savePageContent('special', $content)
+        && file_put_contents($directory . '/special.php', $settings, LOCK_EX) !== false;
 }
 
 /**

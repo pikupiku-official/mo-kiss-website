@@ -11,7 +11,6 @@ require_once __DIR__ . '/../includes/functions.php';
 $auth = new Auth();
 $auth->requireLogin();
 
-$db = Database::getInstance();
 $message = '';
 $messageType = '';
 
@@ -23,18 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = '内容を入力してください';
         $messageType = 'error';
     } else {
-        $existing = $db->queryOne("SELECT * FROM pages WHERE slug = 'system'");
-
-        if ($existing) {
-            if ($db->execute("UPDATE pages SET content = ? WHERE slug = 'system'", [$content])) {
-                $message = 'SYSTEMページを更新しました';
-                $messageType = 'success';
-            }
+        if (savePageContent('system', $content)) {
+            $message = 'SYSTEMページを更新しました';
+            $messageType = 'success';
         } else {
-            if ($db->execute("INSERT INTO pages (slug, title, content) VALUES ('system', 'SYSTEM', ?)", [$content])) {
-                $message = 'SYSTEMページを作成しました';
-                $messageType = 'success';
-            }
+            $message = '保存に失敗しました。contentディレクトリの書き込み権限を確認してください';
+            $messageType = 'error';
         }
     }
 }

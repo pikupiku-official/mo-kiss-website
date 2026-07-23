@@ -24,15 +24,6 @@ CREATE TABLE IF NOT EXISTS news (
     INDEX idx_date (date DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ページコンテンツテーブル（STORY, SYSTEM等）
-CREATE TABLE IF NOT EXISTS pages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    slug VARCHAR(50) UNIQUE NOT NULL COMMENT 'story, system等',
-    title VARCHAR(100) NOT NULL,
-    content LONGTEXT NOT NULL,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- キャラクターテーブル
 CREATE TABLE IF NOT EXISTS characters (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,14 +37,6 @@ CREATE TABLE IF NOT EXISTS characters (
     image_path VARCHAR(255) COMMENT '画像パス',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_sort (sort_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- SPECIAL（発売情報）テーブル
-CREATE TABLE IF NOT EXISTS special (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    release_date DATE COMMENT '発売予定日（カウントダウン用）',
-    content LONGTEXT COMMENT '発売情報テキスト',
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- サイト設定テーブル（カウンター、BGM等）
@@ -70,15 +53,26 @@ CREATE TABLE IF NOT EXISTS access_counter (
     count INT DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 匿名ユニーク訪問者（CookieのランダムIDをSHA-256化して保存）
+CREATE TABLE IF NOT EXISTS access_visitors (
+    visitor_hash CHAR(64) PRIMARY KEY,
+    first_visited_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 日別ユニーク訪問者
+CREATE TABLE IF NOT EXISTS access_daily_visitors (
+    visit_date DATE NOT NULL,
+    visitor_hash CHAR(64) NOT NULL,
+    first_visited_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (visit_date, visitor_hash),
+    INDEX idx_visit_date (visit_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ===== 初期データ投入 =====
 
 -- デフォルト管理者ユーザー（パスワード: admin123）
 INSERT INTO users (username, password) VALUES
 ('admin', '$2y$12$0ZC20SKq4FoLVDcNpJYZGeb0pYpmAnFqr6kEHM0Ytoep98l4Gn4My');
-
--- ページコンテンツ初期値
-INSERT INTO pages (slug, title, content) VALUES
-('system', 'SYSTEM', '<h2>ゲームシステム</h2>\n<p>本作は、テキストを読み進めながら選択肢を選ぶことで物語が分岐する、恋愛アドベンチャーゲームです。</p>\n<h3>基本システム</h3>\n<ul>\n<li>期間：1999年5月31日〜7月31日</li>\n<li>ゲーム内時間は1999年5月31日から始まり、1日ごとに世界の終末、7月31日へと近づいていきます。</li>\n<li>限られた時間でどう行動していくかが、少女たちとのエンディングに影響します。</li>\n</ul>\n<h3>特徴</h3>\n<ul>\n<li>1999年風の色調補正・画質加工によって彩られる「あの頃の景色」が物語を劇的に彩ります。</li>\n<li>動作環境：Steam</li>\n</ul>');
 
 -- キャラクター初期データ
 INSERT INTO characters (sort_order, name, name_kana, grade, club, height, description, image_path) VALUES
@@ -86,10 +80,6 @@ INSERT INTO characters (sort_order, name, name_kana, grade, club, height, descri
 (2, '舞田沙那子', 'まいた さなこ', '三年生', '帰宅部', NULL, '遅刻をした日、正門で出会った先輩。話しかけても返事は冷たく、ひとりが好きみたいだ。帰りの電車でゲームボーイカラーをしている。', NULL),
 (3, '桔梗美鈴', 'ききょう みすず', '三年生', '元吹奏楽部', NULL, '抜群のルックスを持つ高嶺の花の先輩。吹奏楽部でコントラバスを弾いていた。いつも明るく楽しそうでそれ故人気が高いが、恋愛に関しては奥手。', NULL),
 (4, '増田', 'ますた', '二年生', '野球部（元）', NULL, 'クラスのムードメーカーで主人公の親友。野球部を辞めた現在は、ロックバンドで一旗揚げるべく歌を特訓中。とにかくモテない。', NULL);
-
--- SPECIAL初期データ
-INSERT INTO special (release_date, content) VALUES
-('2026-12-31', '<h2>発売情報</h2>\n<p>「モーキス」は2026年12月31日発売予定！</p>\n<p>世紀末に相応しい、この日を選びました。</p>\n<h3>価格</h3>\n<p>通常版：6,800円（税別）</p>\n<p>限定版：9,800円（税別）※サントラCD・設定資料集付き</p>\n<h3>動作環境</h3>\n<p>OS：Windows 10/11</p>\n<p>CPU：Intel Core i3以上推奨</p>\n<p>メモリ：4GB以上</p>\n<p>HDD：2GB以上の空き容量</p>');
 
 -- サイト設定初期値
 INSERT INTO settings (setting_key, setting_value) VALUES

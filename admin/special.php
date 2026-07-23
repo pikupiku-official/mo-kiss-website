@@ -11,7 +11,6 @@ require_once __DIR__ . '/../includes/functions.php';
 $auth = new Auth();
 $auth->requireLogin();
 
-$db = Database::getInstance();
 $message = '';
 $messageType = '';
 
@@ -24,18 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = '内容を入力してください';
         $messageType = 'error';
     } else {
-        $existing = $db->queryOne("SELECT * FROM special WHERE id = 1");
-
-        if ($existing) {
-            if ($db->execute("UPDATE special SET release_date = ?, content = ? WHERE id = 1", [$releaseDate, $content])) {
-                $message = 'SPECIALページを更新しました';
-                $messageType = 'success';
-            }
+        if (saveSpecialInfo($releaseDate, $content)) {
+            $message = 'SPECIALページを更新しました';
+            $messageType = 'success';
         } else {
-            if ($db->execute("INSERT INTO special (id, release_date, content) VALUES (1, ?, ?)", [$releaseDate, $content])) {
-                $message = 'SPECIALページを作成しました';
-                $messageType = 'success';
-            }
+            $message = '保存に失敗しました。contentディレクトリの書き込み権限を確認してください';
+            $messageType = 'error';
         }
     }
 }

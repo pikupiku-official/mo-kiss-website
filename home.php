@@ -7,8 +7,9 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// アクセスカウンター更新
-$accessCount = getAccessCount(true);
+// 匿名Cookieを使ったユニーク訪問者カウンター
+$accessStats = getAccessStats(true);
+$accessCount = $accessStats['total'];
 
 // What's News取得
 $newsList = getNews(10);
@@ -72,7 +73,7 @@ $bgm = getBgmSetting();
             <?php echo displayCounter($accessCount); ?>
         </p>
         <p style="font-size: 12px; color: #2c2235; font-weight: normal; margin-bottom: 5px;">
-            あなたは <strong style="color: #e6007e; font-size: 14px;"><?php echo number_format($accessCount); ?></strong> 人目の訪問者です （本日：<?php echo rand(1, 5); ?> / 昨日：<?php echo rand(5, 20); ?>）
+            あなたは <strong style="color: #e6007e; font-size: 14px;"><?php echo number_format($accessCount); ?></strong> 人目の訪問者です （本日：<?php echo number_format($accessStats['today']); ?> / 昨日：<?php echo number_format($accessStats['yesterday']); ?>）
         </p>
         <div style="font-size: 10px; color: #665c6e; margin-bottom: 15px; font-family: 'MS Pゴシック', sans-serif;">
             （キリ番報告はBBSまで！）

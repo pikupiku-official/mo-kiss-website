@@ -46,7 +46,7 @@ jobs:
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;
-              open -u \"$LOLIPOP_FTP_USERNAME\",\"$LOLIPOP_FTP_PASSWORD\" \"$LOLIPOP_FTP_SERVER\";
+              open -u $LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD $LOLIPOP_FTP_SERVER;
               echo 'FTP current directory:';
               pwd;
               echo 'FTP root contents:';

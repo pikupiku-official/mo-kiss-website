@@ -81,6 +81,13 @@ jobs:
             -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no -o UpdateHostKeys=no" \
             ./ "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
 
+          sshpass -e ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            -o UpdateHostKeys=no \
+            "$SSH_USER@$SSH_HOST" \
+            "printf '%s\n' '$GITHUB_SHA' > '$REMOTE_PATH/deploy-version.txt'"
+
       - name: Verify deployment
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -88,12 +95,20 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSHPASS: ${{ secrets.SSH_PASS }}
         run: |
+          REMOTE_PATH="$(sshpass -e ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            -o UpdateHostKeys=no \
+            "$SSH_USER@$SSH_HOST" \
+            'printf "%s" "$HOME/web/mokiss"')"
+          test -n "$REMOTE_PATH"
+
           REMOTE_SHA="$(sshpass -e ssh \
             -p "$SSH_PORT" \
             -o StrictHostKeyChecking=no \
             -o UpdateHostKeys=no \
             "$SSH_USER@$SSH_HOST" \
-            'cat "$HOME/web/mokiss/deploy-version.txt"')"
+            "cat '$REMOTE_PATH/deploy-version.txt'")"
           test "$REMOTE_SHA" = "$GITHUB_SHA"
 
           PUBLIC_SHA="$(curl --fail --silent --show-error \

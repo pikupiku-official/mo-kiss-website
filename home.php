@@ -106,7 +106,7 @@ $bgm = getBgmSetting();
             <p style="color: #ff7f00; margin: 0 0 8px 0; font-weight: normal; font-size: 11px;">▼ 当サイトの紹介用バナー（リンクフリー） ▼</p>
             <img src="images/banner.jpg" alt="MOKISS Banner" width="88" height="31" style="border: 1px solid #ff66cc; margin-bottom: 8px;"><br>
             <span style="font-size: 9px; color: #888;">リンク用HTMLコード：</span><br>
-            <textarea readonly onclick="this.select()" style="font-size: 9px; width: 280px; height: 35px; background: #000; color: #ff66cc; border: 1px solid #ff66cc; font-family: monospace; resize: none; overflow: hidden;"><a href="https://yourdomain.com/" target="_blank"><img src="https://yourdomain.com/images/banner.jpg" width="88" height="31" alt="モーキス 公式サイト"></a></textarea>
+            <textarea readonly onclick="this.select()" style="font-size: 9px; width: 280px; height: 35px; background: #000; color: #ff66cc; border: 1px solid #ff66cc; font-family: monospace; resize: none; overflow: hidden;"><a href="https://mokiss.jp/" target="_blank"><img src="https://mokiss.jp/images/banner.jpg" width="88" height="31" alt="モーキス 公式サイト"></a></textarea>
             <p style="font-size: 9px; color: #ff66aa; margin: 5px 0 0 0;">※直リンクは禁止されております。バナーは保存してお使いください。</p>
         </div>
         

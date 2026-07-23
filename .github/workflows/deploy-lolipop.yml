@@ -39,14 +39,17 @@ jobs:
         run: |
           lftp -e "
               debug 3;
+              set ftp:ssl-allow true;
+              set ftp:ssl-auth TLS;
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
+              set ftp:ssl-data-use-keys false;
               set ftp:passive-mode true;
               set ftp:prefer-epsv false;
               set ssl:verify-certificate true;
               set net:max-retries 2;
               set net:timeout 20;
-              open -u $LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD $LOLIPOP_FTP_SERVER;
+              open -u $LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD ftp://$LOLIPOP_FTP_SERVER;
               echo 'FTP current directory:';
               pwd;
               echo 'FTP root contents:';

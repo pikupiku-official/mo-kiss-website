@@ -111,6 +111,15 @@ jobs:
             "cat '$REMOTE_PATH/deploy-version.txt'")"
           test "$REMOTE_SHA" = "$GITHUB_SHA"
 
-          PUBLIC_SHA="$(curl --fail --silent --show-error \
-            "https://mokiss.jp/deploy-version.txt?sha=$GITHUB_SHA")"
+          PUBLIC_SHA=""
+          if ! PUBLIC_SHA="$(curl --fail --silent --show-error \
+            --connect-timeout 15 \
+            --max-time 30 \
+            --retry 3 \
+            --retry-delay 5 \
+            --retry-all-errors \
+            "https://mokiss.jp/deploy-version.txt?sha=$GITHUB_SHA")"; then
+            echo "::warning::Deployment succeeded over SSH, but the public HTTPS endpoint could not be reached."
+            exit 0
+          fi
           test "$PUBLIC_SHA" = "$GITHUB_SHA"

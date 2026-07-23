@@ -25,51 +25,67 @@ jobs:
             -not -path './.git/*' \
             -print0 | xargs -0 -n1 php -l
 
-      - name: Install lftp
+      - name: Install deployment tools
         run: |
           sudo apt-get update
-          sudo apt-get install --yes lftp
+          sudo apt-get install --yes sshpass rsync
 
-      - name: Upload over FTPS
+      - name: Add deployment version
+        run: printf '%s\n' "$GITHUB_SHA" > deploy-version.txt
+
+      - name: Prepare remote directory
         env:
-          LOLIPOP_FTP_SERVER: ${{ secrets.LOLIPOP_FTP_SERVER }}
-          LOLIPOP_FTP_USERNAME: ${{ secrets.LOLIPOP_FTP_USERNAME }}
-          LOLIPOP_FTP_PASSWORD: ${{ secrets.LOLIPOP_FTP_PASSWORD }}
-          LOLIPOP_SERVER_DIR: ${{ secrets.LOLIPOP_SERVER_DIR }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSHPASS: ${{ secrets.SSH_PASS }}
         run: |
-          lftp -e "
-              debug 3;
-              set ftp:ssl-allow true;
-              set ftp:ssl-auth TLS;
-              set ftp:ssl-force true;
-              set ftp:ssl-protect-data true;
-              set ftp:ssl-data-use-keys false;
-              set ftp:passive-mode true;
-              set ftp:prefer-epsv false;
-              set ssl:verify-certificate true;
-              set net:max-retries 2;
-              set net:timeout 20;
-              open -u $LOLIPOP_FTP_USERNAME,$LOLIPOP_FTP_PASSWORD ftp://$LOLIPOP_FTP_SERVER;
-              echo 'FTP current directory:';
-              pwd;
-              echo 'FTP root contents:';
-              cls -la;
-              cd $LOLIPOP_SERVER_DIR;
-              mirror --reverse --verbose --parallel=4 \
-                --exclude-glob .git \
-                --exclude-glob .git/** \
-                --exclude-glob .github \
-                --exclude-glob .github/** \
-                --exclude-glob .env \
-                --exclude-glob .env.* \
-                --exclude-glob includes/config.local.php \
-                --exclude-glob includes/config.local.example.php \
-                --exclude-glob database.sql \
-                --exclude-glob test_connection.php \
-                --exclude-glob scratch \
-                --exclude-glob scratch/** \
-                --exclude-glob '*.md' \
-                --exclude-glob 'スクリーンショット*' \
-                . .;
-              bye
-            "
+          test -n "$SSH_HOST"
+          test -n "$SSH_USER"
+          test -n "$SSH_PORT"
+          test -n "$SSHPASS"
+          sshpass -e ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            "$SSH_USER@$SSH_HOST" \
+            'test -d "$HOME/web" && mkdir -p "$HOME/web/mokiss"'
+
+      - name: Deploy with rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSHPASS: ${{ secrets.SSH_PASS }}
+        run: |
+          sshpass -e rsync -avz \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='includes/config.local.php' \
+            --exclude='includes/config.local.example.php' \
+            --exclude='database.sql' \
+            --exclude='test_connection.php' \
+            --exclude='scratch/' \
+            --exclude='*.md' \
+            --exclude='スクリーンショット*' \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" \
+            ./ "$SSH_USER@$SSH_HOST:~/web/mokiss/"
+
+      - name: Verify deployment
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSHPASS: ${{ secrets.SSH_PASS }}
+        run: |
+          REMOTE_SHA="$(sshpass -e ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            "$SSH_USER@$SSH_HOST" \
+            'cat "$HOME/web/mokiss/deploy-version.txt"')"
+          test "$REMOTE_SHA" = "$GITHUB_SHA"
+
+          PUBLIC_SHA="$(curl --fail --silent --show-error \
+            "https://mokiss.jp/deploy-version.txt?sha=$GITHUB_SHA")"
+          test "$PUBLIC_SHA" = "$GITHUB_SHA"

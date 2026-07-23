@@ -79,9 +79,35 @@
         </div>
         
         <iframe src="menu.html" name="menu" class="frame-menu" scrolling="no"></iframe>
-        <iframe src="home.php" name="content" class="frame-content"></iframe>
+        <iframe src="home.php" name="content" id="content-frame" class="frame-content"></iframe>
     </div>
     
     <script src="js/retro.js"></script>
+    <script>
+        (function () {
+            var pages = {
+                home: 'home.php',
+                character: 'character.php',
+                system: 'system.php',
+                gallery: 'construction.html',
+                download: 'construction.html',
+                bbs: 'construction.html',
+                link: 'link.php'
+            };
+
+            function showHashPage() {
+                var pageName = window.location.hash.substring(1).toLowerCase();
+                var pageUrl = pages[pageName] || pages.home;
+                var contentFrame = document.getElementById('content-frame');
+
+                if (contentFrame.getAttribute('src') !== pageUrl) {
+                    contentFrame.setAttribute('src', pageUrl);
+                }
+            }
+
+            window.addEventListener('hashchange', showHashPage);
+            showHashPage();
+        }());
+    </script>
 </body>
 </html>

@@ -38,6 +38,10 @@ $bgm = getBgmSetting();
             「世紀末、今さら君と恋をした」
         </div>
 
+        <img src="images/キービジュ.png"
+             alt="モーキス キービジュアル"
+             style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 25px;">
+
         <p style="color: #2c2235; font-size: 12px; line-height: 1.4; font-weight: normal;">
             1999年6月、終末が迫る世界で描かれる恋愛シミュレーションゲーム<br>
             「モーキス」の公式サイトです。
@@ -101,15 +105,7 @@ $bgm = getBgmSetting();
     <div class="notice" style="color: #665c6e; margin-top: 40px; text-align: center;">
         <p style="color: #e6007e; font-weight: normal;">◆ 推奨環境 ◆</p>
         <p>このサイトは Internet Explorer 4.0以上推奨 / 画面解像度 800×600以上推奨</p>
-        
-        <div style="margin: 20px auto; padding: 10px; background: #1a0813; border: 1px solid #ff66cc; display: inline-block; text-align: center; color: #fdf5e6;">
-            <p style="color: #ff7f00; margin: 0 0 8px 0; font-weight: normal; font-size: 11px;">▼ 当サイトの紹介用バナー（リンクフリー） ▼</p>
-            <img src="images/banner.jpg" alt="MOKISS Banner" width="88" height="31" style="border: 1px solid #ff66cc; margin-bottom: 8px;"><br>
-            <span style="font-size: 9px; color: #888;">リンク用HTMLコード：</span><br>
-            <textarea readonly onclick="this.select()" style="font-size: 9px; width: 280px; height: 35px; background: #000; color: #ff66cc; border: 1px solid #ff66cc; font-family: monospace; resize: none; overflow: hidden;"><a href="https://mokiss.jp/" target="_blank"><img src="https://mokiss.jp/images/banner.jpg" width="88" height="31" alt="モーキス 公式サイト"></a></textarea>
-            <p style="font-size: 9px; color: #ff66aa; margin: 5px 0 0 0;">※直リンクは禁止されております。バナーは保存してお使いください。</p>
-        </div>
-        
+
         <hr style="border: 0; border-top: 1px dotted #ccc; margin: 20px 0;">
         <p>&copy; 1999 MOKISS Project. All Rights Reserved.</p>
         <p><a href="/admin/" target="_blank" style="color: #999; font-size: 10px;">管理画面</a></p>

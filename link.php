@@ -51,6 +51,15 @@ require_once __DIR__ . '/includes/functions.php';
                     <p style="font-size: 10px; color: #999; margin: 5px 0 0 0;">最新の製品情報や開発進捗をつぶやきます。</p>
                 </td>
             </tr>
+            <tr>
+                <td width="30%" align="center" style="font-weight: normal; background: #300c18; color: #ff7f00;">メール</td>
+                <td>
+                    <a href="mailto:mokiss.official@gmail.com" target="_blank" style="font-size: 12px; font-weight: normal; color: #ff66cc; text-decoration: underline;">
+                        福田コーポ宛メールアドレス
+                    </a>
+                    <p style="font-size: 10px; color: #999; margin: 5px 0 0 0;">ゲーム『モーキス』や『福田コーポ』へのお問い合わせはこちらから。</p>
+                </td>
+            </tr>
         </table>
     </div>
 
